@@ -7,7 +7,7 @@
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Add this under the Chart.js script -->
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --bg-color: #0a0a0a;
@@ -413,51 +413,52 @@
         </div>
 
        <!-- Results Section -->
-<div id="results-section">
-    <div class="result-header">SCAN COMPLETE</div>
-    <div class="ego-zone" id="ego-zone-display">Calculating Density...</div>
+        <div id="results-section">
+            <div class="result-header">SCAN COMPLETE</div>
+            <div class="ego-zone" id="ego-zone-display">Calculating Density...</div>
 
-    <!-- Save Button -->
-    <button class="save-btn" onclick="saveResults()">Save Results as Image</button>
-
-    <div class="chart-wrapper">
-        <canvas id="radarChart"></canvas>
-    </div>
-
-    <div class="pattern-break-container" id="pattern-breaks">
-        <div class="pb-title">Recommended Pattern Breaks</div>
-    </div>
-
-    <!-- NEW LEGEND SECTION -->
-    <div class="legend-container">
-        
-        <div class="legend-section">
-            <div class="legend-title">Density Levels Guide</div>
-            <div class="density-list">
-                <p><span>Subtle Ego:</span> High presence. You observe thoughts rather than becoming them.</p>
-                <p><span>Typical Ego:</span> Standard structure. You have healthy boundaries but react defensively.</p>
-                <p><span>Strong Ego:</span> High reactivity. Your identity is heavily tied to external outcomes.</p>
-                <p><span>Very Strong Ego:</span> Calcified identity. Almost total identification with the mind/self.</p>
+            <div class="chart-wrapper">
+                <canvas id="radarChart"></canvas>
             </div>
-        </div>
 
-        <div class="legend-section">
-            <div class="legend-title">Archetype Legend</div>
-            <div class="legend-grid">
-                <div class="legend-item"><div class="l-name">Emperor</div><div class="l-desc">Dominance. Needs to be right/in control.</div></div>
-                <div class="legend-item"><div class="l-name">Martyr</div><div class="l-desc">Victimhood. Uses suffering for significance.</div></div>
-                <div class="legend-item"><div class="l-name">Guru</div><div class="l-desc">Spiritual. Uses 'insight' to feel superior.</div></div>
-                <div class="legend-item"><div class="l-name">Shadow</div><div class="l-desc">Insecurity. Hides to avoid judgment.</div></div>
-                <div class="legend-item"><div class="l-name">Savior</div><div class="l-desc">Helper. Needs to be needed to feel worthy.</div></div>
-                <div class="legend-item"><div class="l-name">Phantom</div><div class="l-desc">Avoidant. Keeps peace to protect self.</div></div>
-                <div class="legend-item"><div class="l-name">Hustler</div><div class="l-desc">Performance. Worth = Achievement.</div></div>
-                <div class="legend-item"><div class="l-name">Contrarian</div><div class="l-desc">Unique. Defines self by opposing the crowd.</div></div>
-                <div class="legend-item"><div class="l-name">Cynic</div><div class="l-desc">Intellectual. Uses doubt as a shield.</div></div>
+            <div class="pattern-break-container" id="pattern-breaks">
+                <div class="pb-title">Recommended Pattern Breaks</div>
+                <!-- Content injected via JS -->
             </div>
+
+            <!-- MOVED BUTTON: Now below Pattern Breaks, above Legend -->
+            <button class="save-btn" onclick="saveResults()" style="margin-top: 30px;">Save Results</button>
+
+            <!-- LEGEND SECTION -->
+            <div class="legend-container">
+                <div class="legend-section">
+                    <div class="legend-title">Density Levels Guide</div>
+                    <div class="density-list">
+                        <p><span>Subtle Ego:</span> High presence. You observe thoughts rather than becoming them.</p>
+                        <p><span>Typical Ego:</span> Standard structure. You have healthy boundaries but react defensively.</p>
+                        <p><span>Strong Ego:</span> High reactivity. Your identity is heavily tied to external outcomes.</p>
+                        <p><span>Very Strong Ego:</span> Calcified identity. Almost total identification with the mind/self.</p>
+                    </div>
+                </div>
+
+                <div class="legend-section">
+                    <div class="legend-title">Archetype Legend</div>
+                    <div class="legend-grid">
+                        <div class="legend-item"><div class="l-name">Emperor</div><div class="l-desc">Dominance. Needs to be right/in control.</div></div>
+                        <div class="legend-item"><div class="l-name">Martyr</div><div class="l-desc">Victimhood. Uses suffering for significance.</div></div>
+                        <div class="legend-item"><div class="l-name">Guru</div><div class="l-desc">Spiritual. Uses 'insight' to feel superior.</div></div>
+                        <div class="legend-item"><div class="l-name">Shadow</div><div class="l-desc">Insecurity. Hides to avoid judgment.</div></div>
+                        <div class="legend-item"><div class="l-name">Savior</div><div class="l-desc">Helper. Needs to be needed to feel worthy.</div></div>
+                        <div class="legend-item"><div class="l-name">Phantom</div><div class="l-desc">Avoidant. Keeps peace to protect self.</div></div>
+                        <div class="legend-item"><div class="l-name">Hustler</div><div class="l-desc">Performance. Worth = Achievement.</div></div>
+                        <div class="legend-item"><div class="l-name">Contrarian</div><div class="l-desc">Unique. Defines self by opposing the crowd.</div></div>
+                        <div class="legend-item"><div class="l-name">Cynic</div><div class="l-desc">Intellectual. Uses doubt as a shield.</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="restart-btn" onclick="location.reload()">Reset System</button>
         </div>
-
-    </div>
-
     <button class="restart-btn" onclick="location.reload()">Reset System</button>
 </div>
     <script>
@@ -587,20 +588,32 @@
             renderChart();
             generatePatternBreaks();
             function saveResults() {
-    window.scrollTo(0,0); // Scroll top to ensure clean capture
-    const element = document.querySelector(".container");
-    
-    html2canvas(element, {
-        backgroundColor: "#0a0a0a", // Force dark background
-        scale: 2 // High res
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'ego-scan-results.png';
-        link.href = canvas.toDataURL();
-        link.click();
-    });
-}
+            // Temporarily change button text so user knows it's working
+            const btn = document.querySelector('.save-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "Saving Image...";
+
+            // Target the results section specifically
+            const element = document.getElementById("results-section");
+            
+            html2canvas(element, {
+                backgroundColor: "#0a0a0a", // Force dark background
+                scale: 2, // High res
+                useCORS: true // Fixes potential cross-origin issues
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'ego-scan-results.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                
+                // Put text back to normal
+                btn.innerText = originalText;
+            }).catch(err => {
+                console.error("Image save failed: ", err);
+                btn.innerText = "Error - Try Again";
+            });
         }
+        
 
         function renderChart() {
             const ctx = document.getElementById('radarChart').getContext('2d');
