@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ego Finder</title>
+    <!-- Chart.js Library from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #e0e0e0;
+            --accent-color: #00ffcc;
+            --secondary-color: #333;
+            --panel-bg: #111;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        /* LANDING PAGE */
+        #landing-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .init-btn {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .init-btn:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        /* QUIZ SECTION */
+        #quiz-section {
+            display: none;
+            padding: 20px;
+            background: var(--panel-bg);
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--secondary-color);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 40px;
+            min-height: 60px;
+        }
+
+        .slider-container {
+            margin: 40px 0;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 2px;
+            background: var(--secondary-color);
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-color);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .next-btn {
+            background: var(--secondary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            transition: 0.2s;
+        }
+
+        .next-btn:hover {
+            background: var(--accent-color);
+            color: #000;
+        }
+
+        /* RESULTS SECTION */
+        #results-section {
+            display: none;
+            padding-bottom: 50px;
+        }
+
+        .result-header {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        .ego-zone {
+            font-size: 1rem;
+            color: #888;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--secondary-color);
+            padding-bottom: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .pattern-break-container {
+            text-align: left;
+            background: var(--panel-bg);
+            border: 1px solid var(--secondary-color);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .pb-title {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .pb-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #222;
+        }
+
+        .pb-item h3 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+        }
+
+        .pb-item p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .restart-btn {
+            margin-top: 30px;
+            background: transparent;
+            border: 1px solid #555;
+            color: #888;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        
+        .restart-btn:hover {
+            color: #fff;
+            border-color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Landing Page -->
+    <div id="landing-page">
+        <button class="init-btn" onclick="startApp()">Initiate Scan</button>
+    </div>
+
+    <div class="container">
+        <!-- Quiz Section -->
+        <div id="quiz-section">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            
+            <div class="question-text" id="question-text">
+                Loading...
+            </div>
+
+            <div class="slider-container">
+                <input type="range" min="0" max="100" value="50" id="response-slider">
+                <div class="slider-labels">
+                    <span>Does not describe me</span>
+                    <span>Describes me</span>
+                </div>
+            </div>
+
+            <button class="next-btn" onclick="nextQuestion()">Next</button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section">
+            <div class="result-header">SCAN COMPLETE</div>
+            <div class="ego-zone" id="ego-zone-display">Calculating Density...</div>
+
+            <div class="chart-container">
+                <canvas id="radarChart"></canvas>
+            </div>
+
+            <div class="pattern-break-container" id="pattern-breaks">
+                <div class="pb-title">Recommended Pattern Breaks</div>
+                <!-- Content injected via JS -->
+            </div>
+
+            <button class="restart-btn" onclick="location.reload()">Reset System</button>
+        </div>
+    </div>
+
+    <script>
+        // --- DATASET: 45 Questions (5 per type) ---
+        const questions = [
+            // EMPEROR (Dominance)
+            { type: 'Emperor', text: "When I am contradicted, I feel a sudden rush of heat in my face or chest." },
+            { type: 'Emperor', text: "I secretly believe that most people are incompetent compared to me." },
+            { type: 'Emperor', text: "I have a very hard time letting an argument go until I have proven my point." },
+            { type: 'Emperor', text: "It bothers me deeply when someone else takes charge of a situation I could handle better." },
+            { type: 'Emperor', text: "I feel a loss of respect for people who display weakness or indecision." },
+
+            // MARTYR (Victim)
+            { type: 'Martyr', text: "I frequently feel that I give more to others than I ever receive in return." },
+            { type: 'Martyr', text: "When I am upset, I feel a heavy, sinking sensation in my chest or stomach." },
+            { type: 'Martyr', text: "Bad luck seems to find me more often than it finds other people." },
+            { type: 'Martyr', text: "I replay past hurts in my mind, wondering why people treated me that way." },
+            { type: 'Martyr', text: "It annoys me when people don't acknowledge how difficult my situation is." },
+
+            // GURU (Spiritual)
+            { type: 'Guru', text: "I often feel a sense of pity for people who are 'unconscious' or asleep to the truth." },
+            { type: 'Guru', text: "I feel a detached, floaty sensation when others are engaging in gossip or drama." },
+            { type: 'Guru', text: "I believe my spiritual or intellectual insights make me different from the average person." },
+            { type: 'Guru', text: "I get frustrated when I see people obsessing over shallow, material things." },
+            { type: 'Guru', text: "I sometimes use spiritual concepts to avoid dealing with messy human emotions." },
+
+            // SHADOW (Insecurity)
+            { type: 'Shadow', text: "In group settings, I physically shrink or hunch to take up less space." },
+            { type: 'Shadow', text: "I immediately assume I have done something wrong if someone looks at me strangely." },
+            { type: 'Shadow', text: "I deflect compliments because I secretly feel I don't deserve them." },
+            { type: 'Shadow', text: "I am terrified of being exposed as a fraud or being humiliated in public." },
+            { type: 'Shadow', text: "I avoid voicing my opinion because I don't want to sound stupid." },
+
+            // SAVIOR (Helper)
+            { type: 'Savior', text: "I feel a magnetic physical pull to step in when I see someone struggling." },
+            { type: 'Savior', text: "I feel resentful when people I have helped don't follow my advice." },
+            { type: 'Savior', text: "I worry that if I stop helping, everything around me will fall apart." },
+            { type: 'Savior', text: "I derive most of my self-worth from being the person others rely on." },
+            { type: 'Savior', text: "It is very hard for me to watch someone fail, even if it's their own lesson to learn." },
+
+            // PHANTOM (Avoidant)
+            { type: 'Phantom', text: "I feel my throat tighten or my voice disappear when I need to say 'no'." },
+            { type: 'Phantom', text: "I will agree with things I don't believe just to keep the peace." },
+            { type: 'Phantom', text: "I often 'check out' or dissociate during conflict." },
+            { type: 'Phantom', text: "I prefer to ghost people rather than have a difficult conversation." },
+            { type: 'Phantom', text: "I believe that if I don't express my needs, I can't be hurt." },
+
+            // HUSTLER (Performance)
+            { type: 'Hustler', text: "I feel a restless vibration in my legs or hands when I am not being productive." },
+            { type: 'Hustler', text: "I feel guilty when I take time off to just do nothing." },
+            { type: 'Hustler', text: "I constantly compare my achievements to those of my peers." },
+            { type: 'Hustler', text: "I believe my value as a human is tied to what I produce or earn." },
+            { type: 'Hustler', text: "I lose respect for people who seem lazy or lack ambition." },
+
+            // CONTRARIAN (Unique)
+            { type: 'Contrarian', text: "I feel a prickle of irritation when I realize I am liking something that is popular." },
+            { type: 'Contrarian', text: "I often play 'devil's advocate' just to challenge the group consensus." },
+            { type: 'Contrarian', text: "I have a deep fear of being seen as 'basic' or ordinary." },
+            { type: 'Contrarian', text: "If everyone agrees on something, I automatically assume it must be wrong." },
+            { type: 'Contrarian', text: "I pride myself on being the outsider who sees what others miss." },
+
+            // CYNIC (Intellectual)
+            { type: 'Cynic', text: "I instinctively roll my eyes or feel tension in my brow when hearing hopeful ideas." },
+            { type: 'Cynic', text: "I prepare for the worst outcome so I can never be disappointed." },
+            { type: 'Cynic', text: "I view optimism as a form of naivety or stupidity." },
+            { type: 'Cynic', text: "I use my intellect as a shield to keep people from getting too close." },
+            { type: 'Cynic', text: "I trust my doubts more than I trust people's promises." }
+        ];
+
+        // --- ANTIDOTES (Pattern Breaks) ---
+        const antidotes = {
+            'Emperor': { title: "Surrender Control", desc: "For the next 24 hours, when someone makes a minor mistake, say nothing. Observe the fire in your chest, but do not act on it." },
+            'Martyr': { title: "Rewrite the Script", desc: "Write down your biggest complaint. Now rewrite it removing the words 'me', 'I', 'always', and 'never'." },
+            'Guru': { title: "The Ordinary Challenge", desc: "Do something incredibly 'basic' (watch reality TV, eat junk food) and find the joy in it without judging yourself or others." },
+            'Shadow': { title: "Take Up Space", desc: "Go to a public place. Stand with your feet wide apart and chest open. Maintain eye contact with a stranger for 3 seconds." },
+            'Savior': { title: "Let Them Fail", desc: "Identify one problem you are trying to solve for someone else. Stop. Let the consequences happen. It is their path, not yours." },
+            'Phantom': { title: "Voice the Conflict", desc: "Express a preference today that conflicts with someone else (e.g., 'I don't want to eat there'). Do not apologize." },
+            'Hustler': { title: "Radical Stillness", desc: "Sit for 15 minutes doing absolutely nothing. No phone, no meditation technique. Just sit. Watch the itch to 'do'." },
+            'Contrarian': { title: "Join the Crowd", desc: "Find something popular that you usually mock. Try to understand genuinely why people enjoy it. Join them." },
+            'Cynic': { title: "Risk Hope", desc: "Verbalize one sincere hope you have for the future to another person, without adding a disclaimer or a joke." }
+        };
+
+        // --- STATE VARIABLES ---
+        let currentQuestion = 0;
+        let scores = {
+            'Emperor': 0, 'Martyr': 0, 'Guru': 0, 'Shadow': 0, 
+            'Savior': 0, 'Phantom': 0, 'Hustler': 0, 'Contrarian': 0, 'Cynic': 0
+        };
+        let totalScore = 0; // Max possible is 4500 (45 * 100)
+
+        // --- APP LOGIC ---
+
+        function startApp() {
+            // Shuffle questions to prevent pattern guessing
+            questions.sort(() => Math.random() - 0.5);
+            
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('quiz-section').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question-text').innerText = q.text;
+            
+            // Reset slider to neutral 50
+            document.getElementById('response-slider').value = 50;
+            
+            // Update Progress
+            const pct = (currentQuestion / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = pct + "%";
+        }
+
+        function nextQuestion() {
+            const sliderVal = parseInt(document.getElementById('response-slider').value);
+            const type = questions[currentQuestion].type;
+            
+            // Add to score
+            scores[type] += sliderVal;
+            totalScore += sliderVal;
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-section').style.display = 'none';
+            document.getElementById('results-section').style.display = 'block';
+
+            // 1. Calculate Density Zone
+            const zoneDisplay = document.getElementById('ego-zone-display');
+            let densityText = "";
+            // Max score is 4500. Average 'neutral' user would score 2250.
+            if (totalScore < 1500) densityText = "Subtle Ego (High Presence)";
+            else if (totalScore < 2500) densityText = "Typical Ego (Standard Structure)";
+            else if (totalScore < 3500) densityText = "Strong Ego (High Reactivity)";
+            else densityText = "Very Strong Ego (Calcified Identity)";
+            
+            zoneDisplay.innerHTML = `Ego Density Level: <span style="color:var(--accent-color)">${densityText}</span>`;
+
+            // 2. Render Chart
+            renderChart();
+
+            // 3. Generate Pattern Breaks (Top 3)
+            generatePatternBreaks();
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            const labels = Object.keys(scores);
+            // Normalize scores to 0-100 for the chart (max raw score is 500 per type)
+            const dataPoints = labels.map(label => (scores[label] / 500) * 100);
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ego Footprint',
+                        data: dataPoints,
+                        backgroundColor: 'rgba(0, 255, 204, 0.2)',
+                        borderColor: '#00ffcc',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#00ffcc'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#333' },
+                            grid: { color: '#333' },
+                            pointLabels: {
+                                color: '#e0e0e0',
+                                font: { family: 'Courier New', size: 12 }
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false } // Hide numbers on axis for cleaner look
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function generatePatternBreaks() {
+            // Sort scores to find top 3
+            const sortedTypes = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+            const top3 = sortedTypes.slice(0, 3);
+            
+            const container = document.getElementById('pattern-breaks');
+            
+            top3.forEach(item => {
+                const type = item[0];
+                const intensity = Math.round((item[1] / 500) * 100);
+                const antidote = antidotes[type];
+                
+                const div = document.createElement('div');
+                div.className = 'pb-item';
+                div.innerHTML = `
+                    <h3>${type} (${intensity}%)</h3>
+                    <p><strong>Exercise: ${antidote.title}</strong><br>${antidote.desc}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+    </script>
+</body>
+</html>
