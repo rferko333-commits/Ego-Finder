@@ -412,19 +412,24 @@
             <button class="next-btn" onclick="nextQuestion()">Next</button>
         </div>
 
-       <!-- Results Section -->
+      <!-- Results Section -->
         <div id="results-section">
-            <div class="result-header">SCAN COMPLETE</div>
-            <div class="ego-zone" id="ego-zone-display">Calculating Density...</div>
+            
+            <!-- NEW WRAPPER specifically for the screenshot -->
+            <div id="capture-area" style="background-color: #0a0a0a; padding: 20px 10px; border-radius: 8px;">
+                <div class="result-header">SCAN COMPLETE</div>
+                <div class="ego-zone" id="ego-zone-display">Calculating Density...</div>
 
-            <div class="chart-wrapper">
-                <canvas id="radarChart"></canvas>
-            </div>
+                <div class="chart-wrapper">
+                    <canvas id="radarChart"></canvas>
+                </div>
 
-            <div class="pattern-break-container" id="pattern-breaks">
-                <div class="pb-title">Recommended Pattern Breaks</div>
-                <!-- Content injected via JS -->
+                <div class="pattern-break-container" id="pattern-breaks">
+                    <div class="pb-title">Recommended Pattern Breaks</div>
+                    <!-- Content injected via JS -->
+                </div>
             </div>
+            <!-- END SCREENSHOT WRAPPER -->
 
             <!-- Save Button -->
             <button class="save-btn" onclick="saveResults()" style="margin-top: 30px;">Save Results</button>
@@ -581,22 +586,24 @@
             generatePatternBreaks();
         }
 
-        // MOVED OUTSIDE of showResults so the button can access it
-        function saveResults() {
+       function saveResults() {
             const btn = document.querySelector('.save-btn');
             const originalText = btn.innerText;
             btn.innerText = "Saving Image...";
 
-            const element = document.getElementById("results-section");
+            // Target ONLY the capture area
+            const element = document.getElementById("capture-area");
             
             html2canvas(element, {
                 backgroundColor: "#0a0a0a",
-                scale: 2,
-                useCORS: true
+                scale: 3, // Increased from 2 for sharper text and chart
+                useCORS: true,
+                logging: false
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'ego-scan-results.png';
-                link.href = canvas.toDataURL("image/png");
+                // Force full quality output
+                link.href = canvas.toDataURL("image/png", 1.0); 
                 link.click();
                 
                 btn.innerText = originalText;
