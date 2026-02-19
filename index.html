@@ -501,30 +501,6 @@
             const dataPoints = labels.map(label => Math.round((scores[label] / 500) * 100));
             const chartLabels = labels.map((label, index) => `${label} ${dataPoints[index]}%`);
 
-            // --- FIXED GRADIENT LOGIC ---
-            // 1. Get the width and height of the canvas
-            const width = ctx.canvas.width;
-            const height = ctx.canvas.height;
-            
-            // 2. Determine the center of the chart
-            const centerX = width / 2;
-            const centerY = height / 2;
-
-            // 3. Calculate radius based on the SMALLER dimension to ensure rainbow fits inside the box
-            // Radar charts are usually square, bounded by the smallest side.
-            const gradientRadius = Math.min(width, height) / 2;
-
-            // 4. Create the gradient from center to edge of the square
-            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, gradientRadius);
-            
-            // 5. Define Rainbow Stops (Purple -> Red)
-            gradient.addColorStop(0, 'rgba(102, 51, 153, 0.7)');  // 0% - Deep Purple
-            gradient.addColorStop(0.2, 'rgba(65, 105, 225, 0.7)'); // 20% - Royal Blue
-            gradient.addColorStop(0.4, 'rgba(0, 191, 255, 0.7)');  // 40% - Deep Sky Blue
-            gradient.addColorStop(0.6, 'rgba(50, 205, 50, 0.7)');  // 60% - Lime Green
-            gradient.addColorStop(0.8, 'rgba(255, 215, 0, 0.7)');  // 80% - Gold
-            gradient.addColorStop(1, 'rgba(220, 20, 60, 0.8)');    // 100% - Crimson Red
-
             new Chart(ctx, {
                 type: 'radar',
                 data: {
@@ -532,7 +508,43 @@
                     datasets: [{
                         label: 'Ego Footprint',
                         data: dataPoints,
-                        backgroundColor: gradient,
+                        // DYNAMIC GRADIENT FUNCTION
+                        // This fixes the mobile scaling issue by calculating the gradient 
+                        // based on the chart's actual drawing area at render time.
+                        backgroundColor: function(context) {
+                            const chart = context.chart;
+                            const {ctx, chartArea} = chart;
+
+                            if (!chartArea) {
+                                // This happens on initial load before layout
+                                return null;
+                            }
+
+                            // Calculate the center of the chart
+                            const centerX = (chartArea.left + chartArea.right) / 2;
+                            const centerY = (chartArea.top + chartArea.bottom) / 2;
+                            
+                            // Calculate max radius (approximate distance to edge)
+                            // We use the smaller dimension to keep the gradient proportional
+                            const r = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
+
+                            // Create radial gradient centered on the chart
+                            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, r);
+
+                            // The True Rainbow Map
+                            // 0-40% = Cool colors (Purple/Blue)
+                            // 40-75% = Mid colors (Green/Yellow)
+                            // 75-100% = Hot colors (Orange/Red)
+                            
+                            gradient.addColorStop(0, 'rgba(102, 51, 153, 0.7)');   // 0% - Deep Purple
+                            gradient.addColorStop(0.25, 'rgba(0, 0, 255, 0.6)');  // 25% - Blue
+                            gradient.addColorStop(0.5, 'rgba(0, 255, 0, 0.6)');   // 50% - Green
+                            gradient.addColorStop(0.75, 'rgba(255, 255, 0, 0.7)'); // 75% - Yellow
+                            gradient.addColorStop(0.9, 'rgba(255, 165, 0, 0.8)'); // 90% - Orange
+                            gradient.addColorStop(1, 'rgba(255, 0, 0, 0.9)');     // 100% - Red
+
+                            return gradient;
+                        },
                         borderColor: '#fff',
                         borderWidth: 1,
                         pointBackgroundColor: '#fff',
