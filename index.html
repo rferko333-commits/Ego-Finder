@@ -260,11 +260,9 @@
 
         .pattern-break-container {
             text-align: left;
-            background: #0f0f0f;
-            border: 1px solid var(--secondary-color);
-            padding: 25px;
+            background: transparent;
+            padding: 15px 0;
             margin-top: 20px;
-            border-radius: 8px;
         }
 
         .pb-title {
@@ -310,7 +308,7 @@
             border-color: #fff;
         }
 
-        /* --- NEW STYLES --- */
+        /* NEW STYLES */
         .save-btn {
             background: #333;
             border: 1px solid var(--accent-color);
@@ -350,18 +348,19 @@
 
         .legend-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 15px;
         }
 
         .legend-item {
             background: #111;
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #222;
         }
 
-        .l-name { color: var(--accent-color); font-weight: bold; font-size: 0.9rem; }
-        .l-desc { color: #888; font-size: 0.8rem; margin-top: 5px; line-height: 1.3; }
+        .l-name { color: var(--accent-color); font-weight: bold; font-size: 1rem; margin-bottom: 5px; }
+        .l-desc { color: #ccc; font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px; }
+        .l-examples { color: #888; font-size: 0.75rem; line-height: 1.3; font-style: italic; }
 
         .density-list p {
             font-size: 0.9rem;
@@ -390,7 +389,7 @@
                 Loading...
             </div>
 
-            <!-- Slider (Smooth Step 1) -->
+            <!-- Slider -->
             <div class="slider-wrapper">
                 <div class="slider-label left">Does not<br>describe me</div>
                 
@@ -402,7 +401,6 @@
                         <div class="tick"></div>
                         <div class="tick"></div>
                     </div>
-                    <!-- step="1" allows smooth sliding between ticks -->
                     <input type="range" min="0" max="100" value="50" step="1" id="response-slider">
                 </div>
 
@@ -412,11 +410,11 @@
             <button class="next-btn" onclick="nextQuestion()">Next</button>
         </div>
 
-      <!-- Results Section -->
+       <!-- Results Section -->
         <div id="results-section">
             
-            <!-- NEW WRAPPER specifically for the screenshot -->
-            <div id="capture-area" style="background-color: #0a0a0a; padding: 20px 10px; border-radius: 8px;">
+            <!-- CAPTURE AREA FOR SCREENSHOT -->
+            <div id="capture-area" style="background-color: var(--panel-bg); padding: 20px; border-radius: 8px; border: 1px solid #333;">
                 <div class="result-header">SCAN COMPLETE</div>
                 <div class="ego-zone" id="ego-zone-display">Calculating Density...</div>
 
@@ -429,9 +427,8 @@
                     <!-- Content injected via JS -->
                 </div>
             </div>
-            <!-- END SCREENSHOT WRAPPER -->
+            <!-- END CAPTURE AREA -->
 
-            <!-- Save Button -->
             <button class="save-btn" onclick="saveResults()" style="margin-top: 30px;">Save Results</button>
 
             <!-- LEGEND SECTION -->
@@ -449,20 +446,55 @@
                 <div class="legend-section">
                     <div class="legend-title">Archetype Legend</div>
                     <div class="legend-grid">
-                        <div class="legend-item"><div class="l-name">Emperor</div><div class="l-desc">Dominance. Needs to be right/in control.</div></div>
-                        <div class="legend-item"><div class="l-name">Martyr</div><div class="l-desc">Victimhood. Uses suffering for significance.</div></div>
-                        <div class="legend-item"><div class="l-name">Guru</div><div class="l-desc">Spiritual. Uses 'insight' to feel superior.</div></div>
-                        <div class="legend-item"><div class="l-name">Shadow</div><div class="l-desc">Insecurity. Hides to avoid judgment.</div></div>
-                        <div class="legend-item"><div class="l-name">Savior</div><div class="l-desc">Helper. Needs to be needed to feel worthy.</div></div>
-                        <div class="legend-item"><div class="l-name">Phantom</div><div class="l-desc">Avoidant. Keeps peace to protect self.</div></div>
-                        <div class="legend-item"><div class="l-name">Hustler</div><div class="l-desc">Performance. Worth = Achievement.</div></div>
-                        <div class="legend-item"><div class="l-name">Contrarian</div><div class="l-desc">Unique. Defines self by opposing the crowd.</div></div>
-                        <div class="legend-item"><div class="l-name">Cynic</div><div class="l-desc">Intellectual. Uses doubt as a shield.</div></div>
+                        <div class="legend-item">
+                            <div class="l-name">Emperor</div>
+                            <div class="l-desc">Dominance and control-seeking. Needs to be right and enforce will.</div>
+                            <div class="l-examples"><strong>Examples:</strong> Steve Jobs, Queen Elizabeth I, Vladimir Putin, Alexander the Great, Margaret Thatcher</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="l-name">Martyr</div>
+                            <div class="l-desc">Victimhood. Uses personal suffering and sacrifice for significance.</div>
+                            <div class="l-examples"><strong>Examples:</strong> Frida Kahlo, Mahatma Gandhi, Joan of Arc, Kurt Cobain, Vincent van Gogh</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="l-name">Guru</div>
+                            <div class="l-desc">Spiritual superiority. Uses "insight" to elevate above the ordinary.</div>
+                            <div class="l-examples"><strong>Examples:</strong> Osho (Rajneesh), Deepak Chopra, Jordan Peterson, Aleister Crowley, Jiddu Krishnamurti</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="l-name">Avoider</div>
+                            <div class="l-desc">Hiding and peace-keeping to shield vulnerability and avoid judgment.</div>
+                            <div class="l-examples"><strong>Examples:</strong> Howard Hughes, Emily Dickinson, Keanu Reeves, Greta Garbo, Syd Barrett</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="l-name">Pleaser-Savior</div>
+                            <div class="l-desc">Approval-seeking. Needs to help and be indispensable to feel worthy.</div>
+                            <div class="l-examples"><strong>Examples:</strong> Mother Teresa, Oprah Winfrey, Jimmy Carter, Ellen DeGeneres, Princess Diana</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="l-name">Hustler</div>
+                            <div class="l-desc">Performance-driven. Equates human worth strictly with achievement.</div>
+                            <div class="l-examples"><strong>Examples:</strong> Elon Musk, Serena Williams, Jeff Bezos, Arnold Schwarzenegger, Jay-Z</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="l-name">Defier</div>
+                            <div class="l-desc">Opposition and rebellion. Defines self strictly by opposing the norm.</div>
+                            <div class="l-examples"><strong>Examples:</strong> Kanye West (Ye), Christopher Hitchens, Ayn Rand, Malcolm X, Madonna</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="l-name">Skeptical Judge</div>
+                            <div class="l-desc">Uses doubt and criticism as an intellectual shield for superiority.</div>
+                            <div class="l-examples"><strong>Examples:</strong> Friedrich Nietzsche, George Carlin, Christopher Nolan, Simon Cowell, H.L. Mencken</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="l-name">Perfectionist</div>
+                            <div class="l-desc">Pursues flawlessness to completely avoid shame or failure.</div>
+                            <div class="l-examples"><strong>Examples:</strong> Martha Stewart, Steve Wozniak, Beyoncé, Leonardo da Vinci, Marie Kondo</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Restart Button -->
             <button class="restart-btn" onclick="location.reload()">Reset System</button>
         </div>
     </div> <!-- Closes .container -->
@@ -470,51 +502,68 @@
     <script>
         // --- DATASET ---
         const questions = [
+            // EMPEROR
             { type: 'Emperor', text: "When I am contradicted, I feel a sudden rush of heat in my face or chest." },
             { type: 'Emperor', text: "I secretly believe that most people are incompetent compared to me." },
             { type: 'Emperor', text: "I have a very hard time letting an argument go until I have proven my point." },
             { type: 'Emperor', text: "It bothers me deeply when someone else takes charge of a situation I could handle better." },
             { type: 'Emperor', text: "I feel a loss of respect for people who display weakness or indecision." },
+            
+            // MARTYR
             { type: 'Martyr', text: "I frequently feel that I give more to others than I ever receive in return." },
             { type: 'Martyr', text: "When I am upset, I feel a heavy, sinking sensation in my chest or stomach." },
             { type: 'Martyr', text: "Bad luck seems to find me more often than it finds other people." },
             { type: 'Martyr', text: "I replay past hurts in my mind, wondering why people treated me that way." },
             { type: 'Martyr', text: "It annoys me when people don't acknowledge how difficult my situation is." },
+            
+            // GURU
             { type: 'Guru', text: "I often feel a sense of pity for people who are 'unconscious' or asleep to the truth." },
             { type: 'Guru', text: "I feel a detached, floaty sensation when others are engaging in gossip or drama." },
             { type: 'Guru', text: "I believe my spiritual or intellectual insights make me different from the average person." },
             { type: 'Guru', text: "I get frustrated when I see people obsessing over shallow, material things." },
             { type: 'Guru', text: "I sometimes use spiritual concepts to avoid dealing with messy human emotions." },
-            { type: 'Shadow', text: "In group settings, I physically shrink or hunch to take up less space." },
-            { type: 'Shadow', text: "I immediately assume I have done something wrong if someone looks at me strangely." },
-            { type: 'Shadow', text: "I deflect compliments because I secretly feel I don't deserve them." },
-            { type: 'Shadow', text: "I am terrified of being exposed as a fraud or being humiliated in public." },
-            { type: 'Shadow', text: "I avoid voicing my opinion because I don't want to sound stupid." },
-            { type: 'Savior', text: "I feel a magnetic physical pull to step in when I see someone struggling." },
-            { type: 'Savior', text: "I feel resentful when people I have helped don't follow my advice." },
-            { type: 'Savior', text: "I worry that if I stop helping, everything around me will fall apart." },
-            { type: 'Savior', text: "I derive most of my self-worth from being the person others rely on." },
-            { type: 'Savior', text: "It is very hard for me to watch someone fail, even if it's their own lesson to learn." },
-            { type: 'Phantom', text: "I feel my throat tighten or my voice disappear when I need to say 'no'." },
-            { type: 'Phantom', text: "I will agree with things I don't believe just to keep the peace." },
-            { type: 'Phantom', text: "I often 'check out' or dissociate during conflict." },
-            { type: 'Phantom', text: "I prefer to ghost people rather than have a difficult conversation." },
-            { type: 'Phantom', text: "I believe that if I don't express my needs, I can't be hurt." },
+            
+            // AVOIDER (Merged Shadow/Phantom)
+            { type: 'Avoider', text: "In group settings, I physically shrink or hunch to take up less space." },
+            { type: 'Avoider', text: "I will agree with things I don't truly believe just to keep the peace." },
+            { type: 'Avoider', text: "I feel my throat tighten or my voice disappear when I need to say 'no'." },
+            { type: 'Avoider', text: "I am terrified of being exposed as a fraud or being judged, so I hide my true self." },
+            { type: 'Avoider', text: "I often 'check out' or mentally dissociate during conflict." },
+            
+            // PLEASER-SAVIOR (Merged People-Pleaser/Savior)
+            { type: 'Pleaser-Savior', text: "I feel a magnetic physical pull to step in and fix things when someone is struggling." },
+            { type: 'Pleaser-Savior', text: "I derive most of my self-worth from being the person others rely on." },
+            { type: 'Pleaser-Savior', text: "I feel slightly resentful when people I have helped don't appreciate it or follow my advice." },
+            { type: 'Pleaser-Savior', text: "I subconsciously change my personality to ensure the people around me like me." },
+            { type: 'Pleaser-Savior', text: "It is very hard for me to watch someone fail; I feel I must intervene to save them." },
+            
+            // HUSTLER
             { type: 'Hustler', text: "I feel a restless vibration in my legs or hands when I am not being productive." },
             { type: 'Hustler', text: "I feel guilty when I take time off to just do nothing." },
             { type: 'Hustler', text: "I constantly compare my achievements to those of my peers." },
             { type: 'Hustler', text: "I believe my value as a human is tied to what I produce or earn." },
             { type: 'Hustler', text: "I lose respect for people who seem lazy or lack ambition." },
-            { type: 'Contrarian', text: "I feel a prickle of irritation when I realize I am liking something that is popular." },
-            { type: 'Contrarian', text: "I often play 'devil's advocate' just to challenge the group consensus." },
-            { type: 'Contrarian', text: "I have a deep fear of being seen as 'basic' or ordinary." },
-            { type: 'Contrarian', text: "If everyone agrees on something, I automatically assume it must be wrong." },
-            { type: 'Contrarian', text: "I pride myself on being the outsider who sees what others miss." },
-            { type: 'Cynic', text: "I instinctively roll my eyes or feel tension in my brow when hearing hopeful ideas." },
-            { type: 'Cynic', text: "I prepare for the worst outcome so I can never be disappointed." },
-            { type: 'Cynic', text: "I view optimism as a form of naivety or stupidity." },
-            { type: 'Cynic', text: "I use my intellect as a shield to keep people from getting too close." },
-            { type: 'Cynic', text: "I trust my doubts more than I trust people's promises." }
+            
+            // DEFIER (Merged Contrarian/Rebel)
+            { type: 'Defier', text: "I feel a prickle of irritation when I realize I am liking something that is popular." },
+            { type: 'Defier', text: "I often play 'devil's advocate' just to challenge the group consensus." },
+            { type: 'Defier', text: "I have a deep fear of being seen as 'basic', conforming, or ordinary." },
+            { type: 'Defier', text: "If everyone agrees on something, I automatically assume it must be flawed." },
+            { type: 'Defier', text: "I pride myself on rebelling against the norm, even if it causes friction." },
+            
+            // SKEPTICAL JUDGE (Merged Cynic/Judge)
+            { type: 'Skeptical Judge', text: "I instinctively roll my eyes or feel tension in my brow when hearing hopeful or naive ideas." },
+            { type: 'Skeptical Judge', text: "I prepare for the worst outcome so I can never be disappointed or fooled." },
+            { type: 'Skeptical Judge', text: "I secretly judge people's intellect or life choices to feel more secure about my own." },
+            { type: 'Skeptical Judge', text: "I use my intellect, doubt, and criticism as a shield to keep people from getting too close." },
+            { type: 'Skeptical Judge', text: "I trust my doubts and critiques much more than I trust people's promises." },
+
+            // PERFECTIONIST (New)
+            { type: 'Perfectionist', text: "I am often paralyzed by the fear of making a mistake or looking foolish." },
+            { type: 'Perfectionist', text: "I obsessively tweak and fix my work long after others would say it is 'done'." },
+            { type: 'Perfectionist', text: "I feel intense shame or anxiety if someone points out a minor flaw in something I did." },
+            { type: 'Perfectionist', text: "I cannot relax if my environment or schedule feels chaotic or out of perfect order." },
+            { type: 'Perfectionist', text: "I hold myself—and the people around me—to impossibly high, flawless standards." }
         ];
 
         // --- ANTIDOTES ---
@@ -522,18 +571,18 @@
             'Emperor': { title: "Surrender Control", desc: "For the next 24 hours, when someone makes a minor mistake, say nothing. Observe the fire in your chest, but do not act on it." },
             'Martyr': { title: "Rewrite the Script", desc: "Write down your biggest complaint. Now rewrite it removing the words 'me', 'I', 'always', and 'never'." },
             'Guru': { title: "The Ordinary Challenge", desc: "Do something incredibly 'basic' (watch reality TV, eat junk food) and find the joy in it without judging yourself or others." },
-            'Shadow': { title: "Take Up Space", desc: "Go to a public place. Stand with your feet wide apart and chest open. Maintain eye contact with a stranger for 3 seconds." },
-            'Savior': { title: "Let Them Fail", desc: "Identify one problem you are trying to solve for someone else. Stop. Let the consequences happen. It is their path, not yours." },
-            'Phantom': { title: "Voice the Conflict", desc: "Express a preference today that conflicts with someone else (e.g., 'I don't want to eat there'). Do not apologize." },
+            'Avoider': { title: "Take Up Space & Voice Conflict", desc: "Express a preference today that conflicts with someone else. Maintain eye contact, do not apologize, and don't shrink." },
+            'Pleaser-Savior': { title: "Let Them Fail", desc: "Identify a problem you are trying to solve for someone else to gain their approval. Stop. Let them handle the consequences." },
             'Hustler': { title: "Radical Stillness", desc: "Sit for 15 minutes doing absolutely nothing. No phone, no meditation technique. Just sit. Watch the itch to 'do'." },
-            'Contrarian': { title: "Join the Crowd", desc: "Find something popular that you usually mock. Try to understand genuinely why people enjoy it. Join them." },
-            'Cynic': { title: "Risk Hope", desc: "Verbalize one sincere hope you have for the future to another person, without adding a disclaimer or a joke." }
+            'Defier': { title: "Join the Crowd", desc: "Find something popular that you usually mock. Try to genuinely understand why people enjoy it. Join them." },
+            'Skeptical Judge': { title: "Suspend Judgment & Risk Hope", desc: "Catch yourself judging someone today and immediately find one thing to praise about them. Verbalize a sincere hope." },
+            'Perfectionist': { title: "Make a Mess", desc: "Intentionally leave a minor typo in an email, or leave a room slightly messy. Sit with the uncomfortable feeling that the world didn't end." }
         };
 
         let currentQuestion = 0;
         let scores = {
-            'Emperor': 0, 'Martyr': 0, 'Guru': 0, 'Shadow': 0, 
-            'Savior': 0, 'Phantom': 0, 'Hustler': 0, 'Contrarian': 0, 'Cynic': 0
+            'Emperor': 0, 'Martyr': 0, 'Guru': 0, 'Avoider': 0, 
+            'Pleaser-Savior': 0, 'Hustler': 0, 'Defier': 0, 'Skeptical Judge': 0, 'Perfectionist': 0
         };
         let totalScore = 0; 
 
@@ -586,24 +635,22 @@
             generatePatternBreaks();
         }
 
-       function saveResults() {
+        function saveResults() {
             const btn = document.querySelector('.save-btn');
             const originalText = btn.innerText;
             btn.innerText = "Saving Image...";
 
-            // Target ONLY the capture area
             const element = document.getElementById("capture-area");
             
             html2canvas(element, {
                 backgroundColor: "#0a0a0a",
-                scale: 3, // Increased from 2 for sharper text and chart
+                scale: 3, 
                 useCORS: true,
                 logging: false
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'ego-scan-results.png';
-                // Force full quality output
-                link.href = canvas.toDataURL("image/png", 1.0); 
+                link.href = canvas.toDataURL("image/png", 1.0);
                 link.click();
                 
                 btn.innerText = originalText;
@@ -636,7 +683,6 @@
 
                             const centerX = (chartArea.left + chartArea.right) / 2;
                             const centerY = (chartArea.top + chartArea.bottom) / 2;
-                            
                             const r = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
 
                             const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, r);
@@ -666,7 +712,7 @@
                             grid: { color: '#333' },
                             pointLabels: {
                                 color: '#e0e0e0',
-                                font: { family: 'Courier New', size: 11 }
+                                font: { family: 'Courier New', size: 10 }
                             },
                             suggestedMin: 0,
                             suggestedMax: 100,
