@@ -20,11 +20,11 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            height: 100vh;
+            min-height: 100vh; /* Allow full height */
             display: flex;
             justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            align-items: flex-start; /* Align top so scrolling works naturally */
+            overflow-y: auto; /* Scrollbar on body/window */
             user-select: none;
         }
 
@@ -32,24 +32,22 @@
             width: 90%;
             max-width: 700px;
             text-align: center;
-            height: auto;
-            max-height: 95vh;
-            overflow-y: auto;
-            padding: 10px;
+            padding: 40px 20px;
+            margin: 0 auto;
         }
 
-        /* LANDING PAGE */
+        /* LANDING PAGE - Fixed to cover screen */
         #landing-page {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100%;
-            width: 100%;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             background: var(--bg-color);
-            z-index: 10;
+            z-index: 999;
         }
 
         .init-btn {
@@ -79,6 +77,7 @@
             border: 1px solid var(--secondary-color);
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-top: 5vh; /* Push down slightly */
         }
 
         .progress-bar {
@@ -148,7 +147,7 @@
             justify-content: space-between;
             pointer-events: none;
             z-index: 0;
-            padding: 0 10px;
+            padding: 0 10px; /* Match thumb offset */
             box-sizing: border-box;
         }
 
@@ -329,7 +328,7 @@
                 Loading...
             </div>
 
-            <!-- Slider -->
+            <!-- Slider (Smooth Step 1) -->
             <div class="slider-wrapper">
                 <div class="slider-label left">Does not<br>describe me</div>
                 
@@ -341,7 +340,8 @@
                         <div class="tick"></div>
                         <div class="tick"></div>
                     </div>
-                    <input type="range" min="0" max="100" value="50" step="25" id="response-slider">
+                    <!-- step="1" allows smooth sliding between ticks -->
+                    <input type="range" min="0" max="100" value="50" step="1" id="response-slider">
                 </div>
 
                 <div class="slider-label right">Describes<br>me</div>
@@ -508,40 +508,36 @@
                     datasets: [{
                         label: 'Ego Footprint',
                         data: dataPoints,
-                        // DYNAMIC GRADIENT FUNCTION
-                        // This fixes the mobile scaling issue by calculating the gradient 
-                        // based on the chart's actual drawing area at render time.
                         backgroundColor: function(context) {
                             const chart = context.chart;
                             const {ctx, chartArea} = chart;
 
                             if (!chartArea) {
-                                // This happens on initial load before layout
                                 return null;
                             }
 
-                            // Calculate the center of the chart
                             const centerX = (chartArea.left + chartArea.right) / 2;
                             const centerY = (chartArea.top + chartArea.bottom) / 2;
                             
-                            // Calculate max radius (approximate distance to edge)
-                            // We use the smaller dimension to keep the gradient proportional
+                            // Use smaller dimension for accurate radius
                             const r = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
 
-                            // Create radial gradient centered on the chart
                             const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, r);
 
-                            // The True Rainbow Map
-                            // 0-40% = Cool colors (Purple/Blue)
-                            // 40-75% = Mid colors (Green/Yellow)
-                            // 75-100% = Hot colors (Orange/Red)
+                            // --- RECALIBRATED GRADIENT (HOTTER SOONER) ---
+                            // 0% - 20%: Deep Purple/Blue (Calm)
+                            // 20% - 40%: Blue to Green
+                            // 40% - 60%: Green to Yellow
+                            // 60% - 80%: Yellow to Orange (Warning Zone starts earlier)
+                            // 80% - 100%: Orange to Red (Danger Zone)
                             
                             gradient.addColorStop(0, 'rgba(102, 51, 153, 0.7)');   // 0% - Deep Purple
-                            gradient.addColorStop(0.25, 'rgba(0, 0, 255, 0.6)');  // 25% - Blue
-                            gradient.addColorStop(0.5, 'rgba(0, 255, 0, 0.6)');   // 50% - Green
-                            gradient.addColorStop(0.75, 'rgba(255, 255, 0, 0.7)'); // 75% - Yellow
-                            gradient.addColorStop(0.9, 'rgba(255, 165, 0, 0.8)'); // 90% - Orange
-                            gradient.addColorStop(1, 'rgba(255, 0, 0, 0.9)');     // 100% - Red
+                            gradient.addColorStop(0.2, 'rgba(0, 0, 255, 0.6)');    // 20% - Blue
+                            gradient.addColorStop(0.4, 'rgba(0, 255, 0, 0.6)');    // 40% - Green
+                            gradient.addColorStop(0.6, 'rgba(255, 255, 0, 0.7)');  // 60% - Yellow
+                            gradient.addColorStop(0.75, 'rgba(255, 165, 0, 0.8)'); // 75% - Orange
+                            gradient.addColorStop(0.9, 'rgba(255, 69, 0, 0.9)');   // 90% - Red-Orange
+                            gradient.addColorStop(1, 'rgba(255, 0, 0, 0.95)');     // 100% - Pure Red
 
                             return gradient;
                         },
