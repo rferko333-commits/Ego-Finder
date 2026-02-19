@@ -25,7 +25,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            user-select: none; /* Prevents text highlighting while clicking fast */
+            user-select: none;
         }
 
         .container {
@@ -107,7 +107,7 @@
             justify-content: center;
         }
 
-        /* FIXED SLIDER LAYOUT */
+        /* SLIDER LAYOUT */
         .slider-wrapper {
             display: flex;
             align-items: center;
@@ -131,13 +131,12 @@
         .range-container {
             flex: 4;
             position: relative;
-            height: 30px; /* Defined height to center vertically */
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Visual Ticks - positioned absolutely behind the slider */
         .ticks-overlay {
             position: absolute;
             top: 50%;
@@ -147,9 +146,9 @@
             transform: translateY(-50%);
             display: flex;
             justify-content: space-between;
-            pointer-events: none; /* Click through to slider */
+            pointer-events: none;
             z-index: 0;
-            padding: 0 10px; /* Match thumb offset */
+            padding: 0 10px;
             box-sizing: border-box;
         }
 
@@ -159,20 +158,18 @@
             background: #444;
         }
 
-        /* The Slider Input */
         input[type=range] {
             -webkit-appearance: none;
             width: 100%;
-            height: 4px; /* Thin track */
-            background: #333; /* Dark track color */
+            height: 4px;
+            background: #333;
             outline: none;
             border-radius: 2px;
-            z-index: 1; /* Sit on top of ticks */
+            z-index: 1;
             margin: 0;
             cursor: pointer;
         }
 
-        /* Thumb Styling */
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -182,7 +179,7 @@
             background: var(--accent-color);
             cursor: pointer;
             box-shadow: 0 0 10px var(--accent-color);
-            border: 2px solid #fff; /* White border to make it pop */
+            border: 2px solid #fff;
         }
 
         input[type=range]::-moz-range-thumb {
@@ -196,15 +193,13 @@
             border: 2px solid #fff;
         }
 
-        /* Remove default focus outlines */
         input[type=range]:focus {
             outline: none;
         }
 
-        /* NEXT BUTTON - Always Colored */
         .next-btn {
-            background: var(--accent-color); /* Always colored */
-            color: #000; /* Dark text for contrast */
+            background: var(--accent-color);
+            color: #000;
             border: none;
             padding: 14px 40px;
             cursor: pointer;
@@ -217,7 +212,7 @@
             border-radius: 4px;
             box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
             transition: transform 0.1s ease;
-            outline: none; /* Remove blue browser outline */
+            outline: none;
         }
 
         .next-btn:hover {
@@ -225,12 +220,8 @@
         }
 
         .next-btn:active {
-            transform: scale(0.96); /* Button press effect */
-            background: var(--accent-color); /* Ensure it stays colored */
-        }
-
-        .next-btn:focus {
-            outline: none; /* No gray focus ring */
+            transform: scale(0.96);
+            background: var(--accent-color);
         }
 
         /* RESULTS SECTION */
@@ -338,12 +329,11 @@
                 Loading...
             </div>
 
-            <!-- Single Bar Slider with Ticks Behind -->
+            <!-- Slider -->
             <div class="slider-wrapper">
                 <div class="slider-label left">Does not<br>describe me</div>
                 
                 <div class="range-container">
-                    <!-- Ticks Background -->
                     <div class="ticks-overlay">
                         <div class="tick"></div>
                         <div class="tick"></div>
@@ -351,7 +341,6 @@
                         <div class="tick"></div>
                         <div class="tick"></div>
                     </div>
-                    <!-- The Actual Slider -->
                     <input type="range" min="0" max="100" value="50" step="25" id="response-slider">
                 </div>
 
@@ -372,7 +361,6 @@
 
             <div class="pattern-break-container" id="pattern-breaks">
                 <div class="pb-title">Recommended Pattern Breaks</div>
-                <!-- Content injected via JS -->
             </div>
 
             <button class="restart-btn" onclick="location.reload()">Reset System</button>
@@ -380,7 +368,7 @@
     </div>
 
     <script>
-        // --- DATASET: 45 Questions ---
+        // --- DATASET ---
         const questions = [
             // EMPEROR
             { type: 'Emperor', text: "When I am contradicted, I feel a sudden rush of heat in my face or chest." },
@@ -511,26 +499,31 @@
             const ctx = document.getElementById('radarChart').getContext('2d');
             const labels = Object.keys(scores);
             const dataPoints = labels.map(label => Math.round((scores[label] / 500) * 100));
-            
-            // Labels with %
             const chartLabels = labels.map((label, index) => `${label} ${dataPoints[index]}%`);
 
-            // TRUE RAINBOW GRADIENT (Center -> Out)
-            // Purple -> Blue -> Green -> Yellow -> Orange -> Red
-            // Center is 0%, Edge is 100%
-            const gradient = ctx.createRadialGradient(
-                ctx.canvas.width / 2, ctx.canvas.height / 2, 0, 
-                ctx.canvas.width / 2, ctx.canvas.height / 2, ctx.canvas.height / 2
-            );
+            // --- FIXED GRADIENT LOGIC ---
+            // 1. Get the width and height of the canvas
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
             
-            // Stops tuned so it doesn't look red until the end
-            gradient.addColorStop(0, 'rgba(148, 0, 211, 0.6)');   // 0% - Violet/Purple
-            gradient.addColorStop(0.2, 'rgba(75, 0, 130, 0.6)');  // 20% - Indigo
-            gradient.addColorStop(0.4, 'rgba(0, 0, 255, 0.6)');   // 40% - Blue
-            gradient.addColorStop(0.6, 'rgba(0, 255, 0, 0.6)');   // 60% - Green
-            gradient.addColorStop(0.8, 'rgba(255, 255, 0, 0.6)'); // 80% - Yellow
-            gradient.addColorStop(0.9, 'rgba(255, 165, 0, 0.7)'); // 90% - Orange
-            gradient.addColorStop(1, 'rgba(255, 0, 0, 0.8)');     // 100% - Red
+            // 2. Determine the center of the chart
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            // 3. Calculate radius based on the SMALLER dimension to ensure rainbow fits inside the box
+            // Radar charts are usually square, bounded by the smallest side.
+            const gradientRadius = Math.min(width, height) / 2;
+
+            // 4. Create the gradient from center to edge of the square
+            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, gradientRadius);
+            
+            // 5. Define Rainbow Stops (Purple -> Red)
+            gradient.addColorStop(0, 'rgba(102, 51, 153, 0.7)');  // 0% - Deep Purple
+            gradient.addColorStop(0.2, 'rgba(65, 105, 225, 0.7)'); // 20% - Royal Blue
+            gradient.addColorStop(0.4, 'rgba(0, 191, 255, 0.7)');  // 40% - Deep Sky Blue
+            gradient.addColorStop(0.6, 'rgba(50, 205, 50, 0.7)');  // 60% - Lime Green
+            gradient.addColorStop(0.8, 'rgba(255, 215, 0, 0.7)');  // 80% - Gold
+            gradient.addColorStop(1, 'rgba(220, 20, 60, 0.8)');    // 100% - Crimson Red
 
             new Chart(ctx, {
                 type: 'radar',
