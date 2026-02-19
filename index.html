@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ego Finder</title>
-    <!-- Chart.js Library from CDN -->
+    <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --bg-color: #0a0a0a;
             --text-color: #e0e0e0;
-            --accent-color: #00ffcc;
+            --accent-color: #00ffcc; /* Neon Cyan */
             --secondary-color: #333;
             --panel-bg: #111;
         }
@@ -19,18 +19,22 @@
             font-family: 'Courier New', Courier, monospace;
             background-color: var(--bg-color);
             color: var(--text-color);
+            margin: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow-x: hidden;
+            overflow: hidden; /* Prevent scrolling on main page */
         }
 
         .container {
             width: 90%;
-            max-width: 600px;
+            max-width: 700px;
             text-align: center;
+            height: auto;
+            max-height: 95vh;
+            overflow-y: auto; /* Allow scrolling inside container if needed */
+            padding: 10px;
         }
 
         /* LANDING PAGE */
@@ -38,34 +42,48 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: var(--bg-color);
+            z-index: 10;
         }
 
         .init-btn {
             background: transparent;
             border: 2px solid var(--accent-color);
             color: var(--accent-color);
-            padding: 15px 40px;
-            font-size: 1.2rem;
+            padding: 20px 50px;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            border-radius: 4px;
         }
 
         .init-btn:hover {
             background: var(--accent-color);
             color: var(--bg-color);
-            box-shadow: 0 0 15px var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
+        .init-btn:active {
+            background: var(--accent-color); /* Keep color on click */
+            color: var(--bg-color);
+            transform: scale(0.98); /* Slight press effect */
         }
 
         /* QUIZ SECTION */
         #quiz-section {
             display: none;
-            padding: 20px;
+            padding: 30px;
             background: var(--panel-bg);
             border: 1px solid var(--secondary-color);
-            border-radius: 8px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .progress-bar {
@@ -81,119 +99,200 @@
             background: var(--accent-color);
             width: 0%;
             transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--accent-color);
         }
 
         .question-text {
-            font-size: 1.1rem;
-            line-height: 1.5;
-            margin-bottom: 40px;
-            min-height: 60px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 50px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .slider-container {
+        /* NEW SLIDER LAYOUT */
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin: 40px 0;
+            gap: 15px;
+        }
+
+        .slider-label {
+            flex: 1;
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        
+        .slider-label.left { text-align: right; }
+        .slider-label.right { text-align: left; }
+
+        .range-container {
+            flex: 3;
+            position: relative;
         }
 
         input[type=range] {
             -webkit-appearance: none;
             width: 100%;
-            height: 2px;
+            height: 6px;
             background: var(--secondary-color);
+            border-radius: 3px;
             outline: none;
         }
 
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             background: var(--accent-color);
             cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+            margin-top: -9px; /* Align thumb with track */
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Chrome/Safari Track */
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: var(--secondary-color);
+            border-radius: 3px;
         }
 
-        .slider-labels {
+        /* Firefox Thumb */
+        input[type=range]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        /* Ticks using datalist logic visually */
+        .ticks {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 10px;
+            padding: 0 10px;
+            margin-top: 5px;
+            position: absolute;
+            width: 100%;
+            top: 12px;
+            left: -10px; /* Offset for padding */
+            pointer-events: none;
+        }
+
+        .tick {
+            width: 2px;
+            height: 6px;
+            background: #555;
         }
 
         .next-btn {
             background: var(--secondary-color);
             color: #fff;
-            border: none;
-            padding: 10px 30px;
+            border: 1px solid #444;
+            padding: 12px 40px;
             cursor: pointer;
             font-family: inherit;
             text-transform: uppercase;
+            font-size: 1rem;
+            letter-spacing: 1px;
             transition: 0.2s;
+            margin-top: 20px;
         }
 
         .next-btn:hover {
             background: var(--accent-color);
             color: #000;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        .next-btn:active {
+            background: var(--accent-color);
+            color: #000;
+            transform: scale(0.98);
         }
 
         /* RESULTS SECTION */
         #results-section {
             display: none;
             padding-bottom: 50px;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .result-header {
-            font-size: 1.5rem;
+            font-size: 2rem;
             margin-bottom: 10px;
-            color: var(--accent-color);
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
 
         .ego-zone {
-            font-size: 1rem;
-            color: #888;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--secondary-color);
+            font-size: 1.1rem;
+            color: #bbb;
+            margin-bottom: 20px;
             padding-bottom: 20px;
+            border-bottom: 1px solid var(--secondary-color);
         }
 
-        .chart-container {
+        .chart-wrapper {
             position: relative;
-            height: 400px;
+            height: 50vh; 
             width: 100%;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .pattern-break-container {
             text-align: left;
-            background: var(--panel-bg);
+            background: #0f0f0f;
             border: 1px solid var(--secondary-color);
-            padding: 20px;
+            padding: 25px;
             margin-top: 20px;
+            border-radius: 8px;
         }
 
         .pb-title {
             color: var(--accent-color);
-            font-size: 1.1rem;
-            margin-bottom: 15px;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
             text-transform: uppercase;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
         }
 
         .pb-item {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #222;
+            margin-bottom: 25px;
         }
 
         .pb-item h3 {
-            margin: 0 0 5px 0;
-            font-size: 1rem;
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+            color: #fff;
         }
 
         .pb-item p {
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #aaa;
+            line-height: 1.4;
         }
 
         .restart-btn {
@@ -201,8 +300,11 @@
             background: transparent;
             border: 1px solid #555;
             color: #888;
-            padding: 10px 20px;
+            padding: 12px 30px;
             cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            transition: 0.2s;
         }
         
         .restart-btn:hover {
@@ -230,12 +332,23 @@
                 Loading...
             </div>
 
-            <div class="slider-container">
-                <input type="range" min="0" max="100" value="50" id="response-slider">
-                <div class="slider-labels">
-                    <span>Does not describe me</span>
-                    <span>Describes me</span>
+            <!-- New Slider Layout -->
+            <div class="slider-wrapper">
+                <div class="slider-label left">Does not<br>describe me</div>
+                
+                <div class="range-container">
+                    <input type="range" min="0" max="100" value="50" step="25" id="response-slider" list="tickmarks">
+                    <!-- Visual Ticks -->
+                    <div class="ticks">
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                        <div class="tick"></div>
+                    </div>
                 </div>
+
+                <div class="slider-label right">Describes<br>me</div>
             </div>
 
             <button class="next-btn" onclick="nextQuestion()">Next</button>
@@ -246,7 +359,7 @@
             <div class="result-header">SCAN COMPLETE</div>
             <div class="ego-zone" id="ego-zone-display">Calculating Density...</div>
 
-            <div class="chart-container">
+            <div class="chart-wrapper">
                 <canvas id="radarChart"></canvas>
             </div>
 
@@ -258,6 +371,15 @@
             <button class="restart-btn" onclick="location.reload()">Reset System</button>
         </div>
     </div>
+
+    <!-- Datalist for functionality (invisible but helps snapping if supported) -->
+    <datalist id="tickmarks">
+        <option value="0"></option>
+        <option value="25"></option>
+        <option value="50"></option>
+        <option value="75"></option>
+        <option value="100"></option>
+    </datalist>
 
     <script>
         // --- DATASET: 45 Questions (5 per type) ---
@@ -345,12 +467,12 @@
             'Emperor': 0, 'Martyr': 0, 'Guru': 0, 'Shadow': 0, 
             'Savior': 0, 'Phantom': 0, 'Hustler': 0, 'Contrarian': 0, 'Cynic': 0
         };
-        let totalScore = 0; // Max possible is 4500 (45 * 100)
+        let totalScore = 0; 
 
         // --- APP LOGIC ---
 
         function startApp() {
-            // Shuffle questions to prevent pattern guessing
+            // Shuffle questions
             questions.sort(() => Math.random() - 0.5);
             
             document.getElementById('landing-page').style.display = 'none';
@@ -394,7 +516,6 @@
             // 1. Calculate Density Zone
             const zoneDisplay = document.getElementById('ego-zone-display');
             let densityText = "";
-            // Max score is 4500. Average 'neutral' user would score 2250.
             if (totalScore < 1500) densityText = "Subtle Ego (High Presence)";
             else if (totalScore < 2500) densityText = "Typical Ego (Standard Structure)";
             else if (totalScore < 3500) densityText = "Strong Ego (High Reactivity)";
@@ -412,20 +533,34 @@
         function renderChart() {
             const ctx = document.getElementById('radarChart').getContext('2d');
             const labels = Object.keys(scores);
-            // Normalize scores to 0-100 for the chart (max raw score is 500 per type)
-            const dataPoints = labels.map(label => (scores[label] / 500) * 100);
+            // Normalize scores to 0-100
+            const dataPoints = labels.map(label => Math.round((scores[label] / 500) * 100));
+            
+            // Create Labels with Percentages included
+            const chartLabels = labels.map((label, index) => `${label} ${dataPoints[index]}%`);
+
+            // Create Radial Gradient (Blue at center -> Red at edge)
+            // Note: Chart.js context dimensions might be needed, but we approximate
+            const gradient = ctx.createRadialGradient(
+                ctx.canvas.width / 2, ctx.canvas.height / 2, 0, 
+                ctx.canvas.width / 2, ctx.canvas.height / 2, ctx.canvas.height / 2
+            );
+            gradient.addColorStop(0, 'rgba(0, 100, 255, 0.5)'); // Low Ego (Blue)
+            gradient.addColorStop(0.5, 'rgba(200, 0, 200, 0.5)'); // Mid Ego (Purple)
+            gradient.addColorStop(1, 'rgba(255, 0, 0, 0.6)');   // High Ego (Red)
 
             new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: labels,
+                    labels: chartLabels,
                     datasets: [{
                         label: 'Ego Footprint',
                         data: dataPoints,
-                        backgroundColor: 'rgba(0, 255, 204, 0.2)',
-                        borderColor: '#00ffcc',
-                        borderWidth: 2,
-                        pointBackgroundColor: '#00ffcc'
+                        backgroundColor: gradient, // Apply Gradient
+                        borderColor: '#fff',
+                        borderWidth: 1,
+                        pointBackgroundColor: '#fff',
+                        pointRadius: 2
                     }]
                 },
                 options: {
@@ -441,7 +576,7 @@
                             },
                             suggestedMin: 0,
                             suggestedMax: 100,
-                            ticks: { display: false } // Hide numbers on axis for cleaner look
+                            ticks: { display: false }
                         }
                     },
                     plugins: {
@@ -452,7 +587,6 @@
         }
 
         function generatePatternBreaks() {
-            // Sort scores to find top 3
             const sortedTypes = Object.entries(scores).sort((a, b) => b[1] - a[1]);
             const top3 = sortedTypes.slice(0, 3);
             
@@ -472,7 +606,6 @@
                 container.appendChild(div);
             });
         }
-
     </script>
 </body>
 </html>
