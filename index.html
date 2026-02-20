@@ -22,11 +22,11 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            min-height: 100vh; /* Allow full height */
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align top so scrolling works naturally */
-            overflow-y: auto; /* Scrollbar on body/window */
+            align-items: flex-start;
+            overflow-y: auto;
             user-select: none;
         }
 
@@ -38,7 +38,7 @@
             margin: 0 auto;
         }
 
-        /* LANDING PAGE - Fixed to cover screen */
+        /* LANDING PAGE */
         #landing-page {
             display: flex;
             justify-content: center;
@@ -79,7 +79,7 @@
             border: 1px solid var(--secondary-color);
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-top: 5vh; /* Push down slightly */
+            margin-top: 5vh;
         }
 
         .progress-bar {
@@ -149,7 +149,7 @@
             justify-content: space-between;
             pointer-events: none;
             z-index: 0;
-            padding: 0 10px; /* Match thumb offset */
+            padding: 0 10px;
             box-sizing: border-box;
         }
 
@@ -308,7 +308,6 @@
             border-color: #fff;
         }
 
-        /* NEW STYLES */
         .save-btn {
             background: #333;
             border: 1px solid var(--accent-color);
@@ -664,7 +663,14 @@
             const ctx = document.getElementById('radarChart').getContext('2d');
             const labels = Object.keys(scores);
             const dataPoints = labels.map(label => Math.round((scores[label] / 500) * 100));
-            const chartLabels = labels.map((label, index) => `${label} ${dataPoints[index]}%`);
+            
+            // SPLIT LONG LABELS FOR MOBILE
+            const chartLabels = labels.map((label, index) => {
+                const val = `${dataPoints[index]}%`;
+                if (label === 'Skeptical Judge') return ['Skeptical', 'Judge', val];
+                if (label === 'Pleaser-Savior') return ['Pleaser-', 'Savior', val];
+                return [label, val];
+            });
 
             new Chart(ctx, {
                 type: 'radar',
@@ -708,15 +714,23 @@
                     }]
                 },
                 options: {
+                    resizeDelay: 200, // Debounce resize to fix orientation bug
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        padding: 10 // Add padding to prevent label cutoff
+                    },
                     scales: {
                         r: {
                             angleLines: { color: '#333' },
                             grid: { color: '#333' },
                             pointLabels: {
                                 color: '#e0e0e0',
-                                font: { family: 'Courier New', size: 10 }
+                                font: { 
+                                    family: 'Courier New',
+                                    // Responsive font size
+                                    size: (window.innerWidth < 500 ? 9 : 11) 
+                                }
                             },
                             suggestedMin: 0,
                             suggestedMax: 100,
