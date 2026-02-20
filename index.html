@@ -523,14 +523,14 @@
             { type: 'Guru', text: "I get frustrated when I see people obsessing over shallow, material things." },
             { type: 'Guru', text: "I sometimes use spiritual concepts to avoid dealing with messy human emotions." },
             
-            // AVOIDER (Merged Shadow/Phantom)
+            // AVOIDER
             { type: 'Avoider', text: "In group settings, I physically shrink or hunch to take up less space." },
             { type: 'Avoider', text: "I will agree with things I don't truly believe just to keep the peace." },
             { type: 'Avoider', text: "I feel my throat tighten or my voice disappear when I need to say 'no'." },
             { type: 'Avoider', text: "I am terrified of being exposed as a fraud or being judged, so I hide my true self." },
             { type: 'Avoider', text: "I often 'check out' or mentally dissociate during conflict." },
             
-            // PLEASER-SAVIOR (Merged People-Pleaser/Savior)
+            // PLEASER-SAVIOR
             { type: 'Pleaser-Savior', text: "I feel a magnetic physical pull to step in and fix things when someone is struggling." },
             { type: 'Pleaser-Savior', text: "I derive most of my self-worth from being the person others rely on." },
             { type: 'Pleaser-Savior', text: "I feel slightly resentful when people I have helped don't appreciate it or follow my advice." },
@@ -544,21 +544,21 @@
             { type: 'Hustler', text: "I believe my value as a human is tied to what I produce or earn." },
             { type: 'Hustler', text: "I lose respect for people who seem lazy or lack ambition." },
             
-            // DEFIER (Merged Contrarian/Rebel)
+            // DEFIER
             { type: 'Defier', text: "I feel a prickle of irritation when I realize I am liking something that is popular." },
             { type: 'Defier', text: "I often play 'devil's advocate' just to challenge the group consensus." },
             { type: 'Defier', text: "I have a deep fear of being seen as 'basic', conforming, or ordinary." },
             { type: 'Defier', text: "If everyone agrees on something, I automatically assume it must be flawed." },
             { type: 'Defier', text: "I pride myself on rebelling against the norm, even if it causes friction." },
             
-            // SKEPTICAL JUDGE (Merged Cynic/Judge)
+            // SKEPTICAL JUDGE
             { type: 'Skeptical Judge', text: "I instinctively roll my eyes or feel tension in my brow when hearing hopeful or naive ideas." },
             { type: 'Skeptical Judge', text: "I prepare for the worst outcome so I can never be disappointed or fooled." },
             { type: 'Skeptical Judge', text: "I secretly judge people's intellect or life choices to feel more secure about my own." },
             { type: 'Skeptical Judge', text: "I use my intellect, doubt, and criticism as a shield to keep people from getting too close." },
             { type: 'Skeptical Judge', text: "I trust my doubts and critiques much more than I trust people's promises." },
 
-            // PERFECTIONIST (New)
+            // PERFECTIONIST
             { type: 'Perfectionist', text: "I am often paralyzed by the fear of making a mistake or looking foolish." },
             { type: 'Perfectionist', text: "I obsessively tweak and fix my work long after others would say it is 'done'." },
             { type: 'Perfectionist', text: "I feel intense shame or anxiety if someone points out a minor flaw in something I did." },
@@ -688,22 +688,6 @@
                             
                             // drawingArea gives the exact radius from the center to the outer polygon
                             const r = rScale.drawingArea; 
-
-                            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, r);
-
-                            gradient.addColorStop(0, 'rgba(102, 51, 153, 0.7)');   // 0% - Purple
-                            gradient.addColorStop(0.2, 'rgba(0, 0, 255, 0.6)');    // 20% - Blue
-                            gradient.addColorStop(0.4, 'rgba(0, 255, 0, 0.6)');    // 40% - Green
-                            gradient.addColorStop(0.6, 'rgba(255, 255, 0, 0.7)');  // 60% - Yellow
-                            gradient.addColorStop(0.7, 'rgba(255, 140, 0, 0.8)');  // 70% - Orange
-                            gradient.addColorStop(0.8, 'rgba(255, 0, 0, 0.85)');   // 80% - RED STARTS HERE
-                            gradient.addColorStop(1, 'rgba(180, 0, 0, 0.95)');     // 100% - Dark Red
-
-                            return gradient;
-                        },
-                            const centerX = (chartArea.left + chartArea.right) / 2;
-                            const centerY = (chartArea.top + chartArea.bottom) / 2;
-                            const r = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
 
                             const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, r);
 
